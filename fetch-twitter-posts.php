@@ -9,6 +9,9 @@ Author: Frame
 Author URI: http://framecreative.com.au
 Description: Fetch latest posts from Twitter and save them in WP
 
+Bitbucket Plugin URI: https://bitbucket.org/framecreative/fetch-twitter-posts
+Bitbucket Branch: master
+
 */
 
 require_once('vendor/autoload.php');
