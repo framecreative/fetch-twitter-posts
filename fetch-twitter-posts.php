@@ -4,7 +4,7 @@
 
 Plugin Name: Fetch Twitter Posts
 Plugin URI: http://framecreative.com.au
-Version: 1.1.3
+Version: 1.0.0
 Author: Frame
 Author URI: http://framecreative.com.au
 Description: Fetch latest posts from Twitter and save them in WP
