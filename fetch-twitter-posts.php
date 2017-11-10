@@ -4,7 +4,7 @@
 
 Plugin Name: Fetch Twitter Posts
 Plugin URI: http://framecreative.com.au
-Version: 1.0.1
+Version: 1.0.2
 Author: Frame
 Author URI: http://framecreative.com.au
 Description: Fetch latest posts from Twitter and save them in WP
@@ -218,7 +218,9 @@ class Fetch_Twitter_Posts {
 		$args = [
 			'exclude_replies' => true,
 			'include_rts' => false,
-			'count' => 200
+			'count' => 200,
+			'include_entities' => true,
+			'tweet_mode' => 'extended'
 		];
 
 		if ( $latestPostID ) $args['since_id'] = $latestPostID;
@@ -234,7 +236,7 @@ class Fetch_Twitter_Posts {
 	function create_post( $status ) {
 
 		$createdTime = new DateTime( $status->created_at );
-		$content = $this->replace_entities( $status->text, $status->entities );
+		$content = $this->replace_entities( $status->full_text, $status->entities );
 
 		$args = array(
 			'post_title' => strip_tags($content),
@@ -249,13 +251,22 @@ class Fetch_Twitter_Posts {
 		if ( $id ) {
 
 			update_post_meta( $id, 'twitter_id', $status->id );
-			update_post_meta( $id, 'twitter_text', $status->text );
-			update_post_meta( $id, 'twitter_entities', maybe_serialize($status->entities) );
+			update_post_meta( $id, 'twitter_text', $status->full_text );
+			update_post_meta( $id, 'twitter_entities', $status->entities );
 
 			update_post_meta( $id, 'twitter_user_id', $status->user->id );
 			update_post_meta( $id, 'twitter_user_name', $status->user->name );
 			update_post_meta( $id, 'twitter_user_screen_name', $status->user->screen_name );
 			update_post_meta( $id, 'twitter_user_image', $status->user->profile_image_url );
+
+			if ( isset( $status->extended_entities->media ) ) {
+
+				$images = array_map( function( $mediaItem ){
+					if ( $mediaItem->type == 'photo' ) return $mediaItem;
+				}, $status->extended_entities->media );
+
+				update_post_meta( $id, 'twitter_media', $images );
+			}
 
 			do_action( 'fetch_twitter_inserted_post', $id, $status );
 
@@ -302,7 +313,7 @@ class Fetch_Twitter_Posts {
 				$temp = [];
 				$temp["start"] = $e->indices[0];
 				$temp["end"] = $e->indices[1];
-				$temp["replacement"] = "<a href='" . $e->expanded_url . "' target='_blank'>" . $e->display_url . "</a>";
+				$temp["replacement"] = '';
 				$replacements[] = $temp;
 			}
 		}
