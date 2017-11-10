@@ -32,7 +32,7 @@ class Fetch_Twitter_Posts {
 
 	function __construct() {
 
-		$this->_instance = $this;
+		self::$_instance = $this;
 
 		$this->settingsPage = admin_url( 'options-general.php?page=' . $this->settings_slug );
 
