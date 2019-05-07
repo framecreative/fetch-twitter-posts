@@ -270,7 +270,7 @@ class Fetch_Twitter_Posts {
 			if ( isset( $status->extended_entities->media ) ) {
 
 				$images = array_map( function( $mediaItem ){
-					if ( $mediaItem->type == 'photo' ) return $mediaItem;
+					if ( $mediaItem->type ) return $mediaItem;
 				}, $status->extended_entities->media );
 
 				update_post_meta( $id, 'twitter_media', $images );
