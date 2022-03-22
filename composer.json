@@ -2,6 +2,7 @@
     "name": "framecreative/fetch-twitter-posts",
     "description": "Fetch latest posts from Twitter and save them in WP",
     "license": "GPL-2.0-or-later",
+    "type": "wordpress-plugin",
     "require": {
         "abraham/twitteroauth": "2.0.2"
     }
